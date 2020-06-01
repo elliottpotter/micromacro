@@ -2,7 +2,7 @@ class IngredientsController < ApplicationController
   
   def parse
     url = 'https://api.spoonacular.com/recipes/parseIngredients?apiKey=1492765f663c43eba2d2de9697a587a0'
-    resp = Faraday.post(url, "ingredientList=#{ingredients_params[:body]}&includeNutrition=true")
+    resp = Faraday.post(url, "ingredientList=#{ingredients_params[:Body]}&includeNutrition=true")
     ingredients = JSON.parse(resp.body)
 
     calories = 0
@@ -25,7 +25,7 @@ class IngredientsController < ApplicationController
     params = {
       messaging_service_sid: ENV['TWILIO_MESSAGING_SERVICE_SID'],
       from: '+12052364969',
-      to: ingredients_params[:phone_number],
+      to: ingredients_params[:From],
       body: text_body
     }
 
@@ -33,7 +33,7 @@ class IngredientsController < ApplicationController
   end
 
   def ingredients_params
-    params.permit(:ingredient, :body, :phone_number)
+    params.permit(:ingredient, :Body, :From)
   end
   
 end
