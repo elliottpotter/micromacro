@@ -19,7 +19,7 @@ class IngredientsController < ApplicationController
       fat += nutrients.find {|n| n['title'] == 'Fat' }['amount'].to_f.round
     end 
 
-    text_body = "Calories: #{calories}\n\n🏋️‍♀️Protein: #{protein}g\n🍞Carbs: #{carbs}g\n🥑Fat: #{fat}g"
+    text_body = "Calories: #{calories}\n\n🏋️‍♀️ Protein: #{protein}g\n🍞 Carbs: #{carbs}g\n🥑 Fat: #{fat}g"
     
     client = Twilio::REST::Client.new(ENV['TWILIO_ACCOUNT_ID'], ENV['TWILIO_AUTH_TOKEN'])
     params = {
