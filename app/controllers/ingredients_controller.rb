@@ -32,13 +32,13 @@ class IngredientsController < ApplicationController
     end
 
     client = Twilio::REST::Client.new(ENV['TWILIO_ACCOUNT_ID'], ENV['TWILIO_AUTH_TOKEN'])
-    params = {
+    text_params = {
       from: '+12052364969',
       to: ingredients_params[:From],
       body: text_body
     }
 
-    client.messages.create(params)
+    client.messages.create(text_params)
 
     Request.create(parameters: params, response_body: text_body) unless ingredients_params[:Body] == 'Req'
   end
