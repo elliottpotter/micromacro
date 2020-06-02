@@ -1,7 +1,7 @@
 class IngredientsController < ApplicationController
   
   def parse
-    if !ingredients_params[:Body] == 'Req'
+    if !(ingredients_params[:Body] == 'Req')
       url = 'https://trackapi.nutritionix.com/v2/natural/nutrients'
       headers = {
         'Content-Type' => 'application/json',
