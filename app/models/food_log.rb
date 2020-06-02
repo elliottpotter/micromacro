@@ -1,0 +1,2 @@
+class FoodLog < ApplicationRecord
+end
