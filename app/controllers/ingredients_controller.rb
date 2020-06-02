@@ -43,7 +43,7 @@ class IngredientsController < ApplicationController
   
 
   def ingredients_params
-    params.permit(:ingredient, :Body, :From)
+    params.permit(:ingredient, :Body, :From, :FromCity, :FromState)
   end
   
 end
