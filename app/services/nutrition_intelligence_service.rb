@@ -12,6 +12,7 @@ class NutritionIntelligenceService
 
   def converse!
     return TextingService.send(to: @user.phone_number, body: WELCOME_TEXT) if @new_user
+    return send_today_logs if @query == 'today'
 
     get_macros_from_query
     TextingService.send(to: @user.phone_number, body: @text_body)
@@ -22,6 +23,7 @@ class NutritionIntelligenceService
     brand_lines = lines.select { |line| line.match(/^(b )/) }
     lines.reject! { |line| brand_lines.index(line) }
     lines = lines.map { |line| line.gsub(/^log /, '').strip }
+    brand_lines = brand_lines.map { |line| line.gsub(/^b /, '').strip }
   
     service = IngredientParsingService.new(lines: lines, branded_lines: brand_lines)
     service.calculate
@@ -46,5 +48,16 @@ class NutritionIntelligenceService
     )
     log.save!
   end
-  
+
+  def send_today_logs
+    logs = FoodLog.where("created_at > ?", (Time.now - DateTime.now.in_time_zone("Central Time (US & Canada)").beginning_of_day).seconds.ago)
+    calories = logs.pluck(:calories).reduce(:+)
+    protein = logs.pluck(:protein).reduce(:+)
+    carbs = logs.pluck(:carbohydrates).reduce(:+)
+    fat = logs.pluck(:fat).reduce(:+)
+
+    body = "Today's totals so far:\n\nCalories: #{calories}\n🏋️‍♀️ Protein: #{protein}g\n🍞 Carbs: #{carbs}g\n🥑 Fat: #{fat}g"
+    TextingService.send(to: @user.phone_number, body: body)
+  end
 end
+

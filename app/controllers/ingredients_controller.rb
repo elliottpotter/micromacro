@@ -1,10 +1,7 @@
 class IngredientsController < ApplicationController
   before_action :set_user, :create_request
   
-  def parse
-    
-    # binding.pry
-    
+  def parse    
     query = ingredients_params[:Body].downcase.strip
 
     service = NutritionIntelligenceService.new(
