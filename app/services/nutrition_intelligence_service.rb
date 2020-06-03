@@ -50,7 +50,7 @@ class NutritionIntelligenceService
   end
 
   def send_today_logs
-    logs = FoodLog.where("created_at > ?", (Time.now - DateTime.now.in_time_zone("Central Time (US & Canada)").beginning_of_day).seconds.ago)
+    logs = FoodLog.where("created_at > ?", (Time.now - (DateTime.now.in_time_zone("Central Time (US & Canada)").beginning_of_day + 5.hours)).seconds.ago)
     calories = logs.pluck(:calories).reduce(:+)
     protein = logs.pluck(:protein).reduce(:+)
     carbs = logs.pluck(:carbohydrates).reduce(:+)
