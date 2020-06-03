@@ -14,7 +14,7 @@ class NutritionIntelligenceService
     return TextingService.send(to: @user.phone_number, body: WELCOME_TEXT) if @new_user
 
     get_macros_from_query
-    # TextingService.send(to: @user.phone_number, body: @text_body)
+    TextingService.send(to: @user.phone_number, body: @text_body)
   end
 
   def get_macros_from_query
