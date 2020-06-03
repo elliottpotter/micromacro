@@ -21,6 +21,9 @@ Bundler.require(*Rails.groups)
 
 module Micromacro
   class Application < Rails::Application
+    # Add custom autoloaded paths
+    config.autoload_paths += Dir["#{config.root}/services/**/"]
+    
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 

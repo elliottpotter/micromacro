@@ -9,6 +9,7 @@ gem 'puma', '~> 4.1'
 gem 'bootsnap', '>= 1.4.2', require: false
 # gem 'rack-cors'
 
+gem 'string-similarity'
 gem 'faraday'
 gem 'twilio-ruby'
 
