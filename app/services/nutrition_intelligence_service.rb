@@ -15,6 +15,7 @@ class NutritionIntelligenceService
   def converse!
     return TextingService.send(to: @user.phone_number, body: WELCOME_TEXT) if @new_user
     return send_today_logs if @query == 'today'
+    return send_today_logs(true) if @query == '24'
     return create_manual_log if @query =~ /log macro/
     return undo_last_log if @query =~ /^undo$/
 
@@ -79,8 +80,8 @@ class NutritionIntelligenceService
     log.save!
   end
 
-  def send_today_logs
-    logs = FoodLog.from_today.where(user: @user)
+  def send_today_logs(day = false)
+    logs = day ? FoodLog.day.where(@user: user) : FoodLog.from_today.where(user: @user)
     calories = logs.pluck(:calories).reduce(:+)
     protein = logs.pluck(:protein).reduce(:+)
     carbs = logs.pluck(:carbohydrates).reduce(:+)
