@@ -81,7 +81,7 @@ class NutritionIntelligenceService
   end
 
   def send_today_logs(day = false)
-    logs = day ? FoodLog.day.where(@user: user) : FoodLog.from_today.where(user: @user)
+    logs = day ? FoodLog.day.where(user: @user) : FoodLog.from_today.where(user: @user)
     calories = logs.pluck(:calories).reduce(:+)
     protein = logs.pluck(:protein).reduce(:+)
     carbs = logs.pluck(:carbohydrates).reduce(:+)
