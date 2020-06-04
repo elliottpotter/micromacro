@@ -8,7 +8,9 @@ class TextingService
       body: body
     }
 
-    client.messages.create(text_params)
+    client.messages.create(text_params) if Rails.env.production?
+
+    puts "\nSENT TEXT\n\nTO: #{to}\nBODY: #{body}\n\n"
   end
 
 end

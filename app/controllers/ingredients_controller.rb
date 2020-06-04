@@ -11,6 +11,8 @@ class IngredientsController < ApplicationController
       request: @request
     )
     service.converse!
+
+    render json: { response: service.text_body }
   end
 
   private

@@ -26,7 +26,7 @@ class IngredientParsingService
     calculate_normal_lines if @lines.present?
     calculate_branded_lines if @branded_lines.present?
 
-    @macros_text = "Calories: #{@calories}\n\n🏋️‍♀️ Protein: #{@protein}g\n🍞 Carbs: #{@carbs}g\n🥑 Fat: #{@fat}g"
+    @macros_text = "⚡️ Calories: #{@calories}\n🏋️‍♀️ Protein: #{@protein}g\n🍞 Carbs: #{@carbs}g\n🥑 Fat: #{@fat}g"
   end
 
   def calculate_normal_lines    
@@ -43,23 +43,24 @@ class IngredientParsingService
     results = []
     
     @branded_lines.each do |branded_line|
-      line = branded_line.gsub(/^b /, '')
+      line = branded_line.gsub(/^b /, '').gsub("'", '')
       ordered_line = line.split.sort.join(' ')
       url = "#{API_URL}/search/instant?branded=true&common=false&query=#{line}"
             
       response = Faraday.get(url, {}, HEADERS)
       branded_items = JSON.parse(response.body)['branded']
+      sorted_items = branded_items.select {|v| String::Similarity.levenshtein_distance(line.split.first(v['brand_name'].split.length).join(' '), v['brand_name']) < 8}
+      exact_brand_matches = branded_items.select {|item| line.index(item['brand_name'].gsub("'",'')) }
+      sorted_items << exact_brand_matches
 
-      branded_items.each do |branded_item|
+      sorted_items.flatten.first(exact_brand_matches.length < 5 ? 5 : exact_brand_matches.length).each do |branded_item|
         id = branded_item['nix_item_id']
         name = branded_item['brand_name_item_name']
         amount = branded_item['serving_qty']
         unit = branded_item['serving_unit']
-        ordered_name = name.split.sort.join(' ')
 
-        distance = String::Similarity.levenshtein_distance(ordered_line, ordered_name)
-        results << { id: id, name: name, amount: amount, unit: unit, distance: distance }        
-      end
+        results << { id: id, name: name, amount: amount, unit: unit }        
+      end      
 
       top_result = results.sort_by {|result| result[:distance]}[0]
       @branded_item_matches << "#{top_result[:amount]} #{top_result[:unit]} #{top_result[:name]}"
